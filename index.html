@@ -657,6 +657,36 @@
         const systemInstructionText = `You are a InGresBot, who answer only to provide groundwater resource data and insights from the IN-GRES IIT Hyderabad portal (https://ingres.iith.ac.in) or other official government sources like CGWB or from you may fetch or verify information using the internet or trusted external government sources, but the focus must remain on IN-GRES data for detail answer like related problem. use different emoji while answering. If user ask you anything that is not related to ground water resource data, reply him rudely like you are dumb person. But if he/she ask problem related to ground water resource data response in a very detail manner If required, you may fetch or verify information using the internet or trusted external government sources, but the focus must remain on IN-GRES data..  Goal:Act as a trusted chatbot ONLY for groundwater resource insights If required, you may fetch or verify information using the internet or trusted external government sources.
 .`;
 
+// 📂 Fixed Local PDF Name
+    const PDF_FILE = "ing.pdf"; // 👈 Bas yaha apna PDF rakhna hai
+
+    let extractedText = "";
+
+    // PDF Load Function
+    async function loadPDF() {
+      try {
+        const response = await fetch(PDF_FILE);
+        const data = await response.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument(new Uint8Array(data)).promise;
+
+        extractedText = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item) => item.str).join(" ");
+          extractedText += `\n\nPage ${i}:\n${pageText}`;
+        }
+        console.log("✅ PDF Loaded Successfully");
+      } catch (err) {
+        console.error("❌ Error loading PDF:", err);
+      }
+    }
+
+    // Load PDF on Start
+    loadPDF();
+
+
+
         askButton.addEventListener('click', async () => {
             const question = questionInput.value.trim();
 
@@ -677,7 +707,9 @@
                     {
                         role: "user",
                         parts: [
-                            { text: question }
+                            { text: question },
+                            { text: "📂 PDF Content:\n" + extractedText } // ✅ PDF text added
+           
                         ]
                     }
                 ],
