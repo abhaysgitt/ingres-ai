@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>InGres — Coding Instructor (InGres Styled)</title>
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --panel: #0f1720;
+        --text: #e6edf3;
+        --muted: #9fb0c0;
+        --accent: #6ea8fe; /* ingres accent */
+        --accent-2: #7ee787;
+        --border: #22303c;
+        --card: #0e1520;
+        --sidebar-width: 280px;
+        --transition: all 0.25s ease;
+      }
+      * { box-sizing: border-box }
+      html,body { height:100%; margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, 'Helvetica Neue', Arial; background: var(--bg); color:var(--text)}
+
+      /* Layout */
+      .app { display:flex; min-height:100vh }
+
+      /* Sidebar (kept from original but recolored) */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: linear-gradient(180deg,#071021,#0b1320);
+        border-right:1px solid var(--border);
+        padding:28px 18px; position:fixed; left:0; top:0; bottom:0; display:flex; flex-direction:column; gap:18px; z-index:100;
+      }
+      .logo { display:flex; gap:12px; align-items:center }
+      .logo svg { width:44px; height:44px }
+      .brand-title { font-weight:800; font-size:1.1rem }
+      .badge { font-size:11px; color:var(--accent-2); border:1px solid rgba(126,231,135,0.12); padding:3px 8px; border-radius:999px }
+
+      .menu { margin-top:18px; display:flex; flex-direction:column; gap:8px }
+      .menu .item { padding:12px 14px; border-radius:10px; color:var(--muted); display:flex; gap:12px; align-items:center; cursor:pointer; border:1px solid transparent }
+      .menu .item.active, .menu .item:hover { background:linear-gradient(90deg, rgba(110,168,254,0.04), rgba(126,231,135,0.02)); color:var(--text); border-color:var(--border) }
+
+      .sidebar-foot { margin-top:auto; color:var(--muted); font-size:12px }
+
+      /* Main area */
+      .main { margin-left:var(--sidebar-width); flex:1; display:flex; flex-direction:column; min-height:100vh }
+      header { display:flex; align-items:center; justify-content:space-between; padding:14px 28px; border-bottom:1px solid var(--border); background: linear-gradient(180deg, rgba(15,23,32,.6), rgba(15,23,32,.4)); }
+      .header-left { display:flex; gap:18px; align-items:center }
+      .title { font-size:1.6rem; font-weight:800 }
+      .controls { display:flex; gap:10px; align-items:center }
+      .controls input, .controls select { background:var(--card); color:var(--text); border:1px solid var(--border); padding:8px 10px; border-radius:10px }
+      .controls .btn { background:var(--accent); color:#051225; border:0; padding:9px 12px; border-radius:10px; cursor:pointer; font-weight:700 }
+      .controls .ghost { background:transparent; border:1px solid var(--border); color:var(--muted); padding:8px 10px; border-radius:10px }
+
+      main { padding:24px; display:grid; gap:22px; grid-template-columns:1fr 1fr }
+      .card { background:var(--panel); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.35) }
+      .card .hd { padding:18px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center }
+      .card .bd { padding:20px }
+
+      /* Input area spans both columns */
+      .input-card { grid-column: 1 / -1 }
+      label { display:block; margin-bottom:10px; font-weight:700 }
+      textarea { width:100%; min-height:140px; padding:14px; border-radius:10px; border:1px solid var(--border); background: #071022; color:var(--text); resize:vertical; font-family:monospace }
+      button#ask { margin-top:12px; width:100%; padding:14px; border-radius:12px; border:0; background:var(--accent); color:#051225; font-weight:800; cursor:pointer }
+
+      /* Output */
+      .output { grid-column:1 / -1 }
+      #out { padding:20px; min-height:220px; white-space:pre-wrap; line-height:1.6 }
+
+      /* Responsive */
+      @media(max-width:1024px){ main{grid-template-columns:1fr} .sidebar{width:72px} .brand-title,.menu .item span,.sidebar-foot{display:none} .main{margin-left:72px} }
+      @media(max-width:520px){ .sidebar{display:none} .main{margin-left:0} }
+    </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <!-- InGres-style logo -->
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2l8 4.5v9L12 20.5 4 15.5v-9L12 2z" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M12 7v10M6.5 10l5.5 3 5.5-3" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        <div>
+          <div class="brand-title">InGresBot</div>
+          <div style="margin-top:6px"><span class="badge">IN-GRES / CGWB only</span></div>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <div class="item active"><span>Dashboard</span></div>
+        <div class="item"><span>Queries</span></div>
+        <div class="item"><span>Data Sources</span></div>
+        <div class="item"><span>Settings</span></div>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div>Scope: IN-GRES (IIT Hyderabad) & CGWB</div>
+        <div style="margin-top:8px">Uses Google Generative API (client-side)</div>
+      </div>
+    </aside>
+
+    <section class="main">
+      <header>
+        <div class="header-left">
+          <div class="title">InGres — Groundwater Data Assistant</div>
+          <div style="color:var(--muted); margin-left:8px">Ask by region / state / year</div>
+        </div>
+        <div class="controls">
+          <input id="apiKey" type="password" placeholder="Enter API Key…" />
+          <select id="model"><option>text-bison-001</option></select>
+          <button class="btn ghost" id="save">Save</button>
+          <button class="btn" id="clear">Clear</button>
+        </div>
+      </header>
+
+      <main>
+        <div class="card">
+          <div class="hd"><strong>Stats</strong><span style="color:var(--muted)">Live snapshot</span></div>
+          <div class="bd">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+              <div style="background:linear-gradient(180deg, rgba(110,168,254,0.02), transparent); padding:14px; border-radius:10px; border:1px solid var(--border)">
+                <div style="font-weight:800; font-size:20px">1,248</div>
+                <div style="color:var(--muted)">Queries Served</div>
+              </div>
+              <div style="background:linear-gradient(180deg, rgba(126,231,135,0.02), transparent); padding:14px; border-radius:10px; border:1px solid var(--border)">
+                <div style="font-weight:800; font-size:20px">CGWB · IN-GRES</div>
+                <div style="color:var(--muted)">Data Scope</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="hd"><strong>Popular Queries</strong><span style="color:var(--muted)">Examples</span></div>
+          <div class="bd">
+            <ul style="line-height:1.9; color:var(--muted)">
+              <li>"Telangana 2023 groundwater status"</li>
+              <li>"Gujarat extraction vs recharge 2022"</li>
+              <li>"District wise: Pune 2021"</li>
+              <li>"Best available CGWB report for Maharashtra"</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Input (spans full width) -->
+        <div class="card input-card">
+          <div class="hd"><strong>Query IN-GRES / CGWB</strong><span style="color:var(--muted)">Enter region, year or dataset</span></div>
+          <div class="bd">
+            <label for="q">Your Groundwater Query</label>
+            <textarea id="q" placeholder="e.g., 'Telangana 2023 status' or 'District: Pune 2022' "></textarea>
+            <button id="ask">Send Query</button>
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div class="card output">
+          <div class="hd"><strong>Response</strong><span style="color:var(--muted)">IN-GRES / CGWB scope only</span></div>
+          <div class="bd" id="out">
+            <div style="color:var(--muted)">Welcome! I only answer about groundwater resource data from IN-GRES (IIT Hyderabad) and official CGWB sources. Ask by region/state/year, e.g.:<br><br>
+            • “Telangana 2023 status”<br>
+            • “Gujarat – extraction vs recharge”<br>
+            • “District wise: Pune 2022”</div>
+          </div>
+        </div>
+
+      </main>
+
+    </section>
+  </div>
+
+  <script>
+    // minimal interactivity: copy some behaviour from original files
+    const askBtn = document.getElementById('ask');
+    const out = document.getElementById('out');
+    const q = document.getElementById('q');
+    const clear = document.getElementById('clear');
+
+    askBtn.addEventListener('click', () => {
+      const txt = q.value.trim();
+      if(!txt) { out.innerHTML = '<div style="color:#ff7171">Please enter a query (e.g., "Telangana 2023 status")</div>'; return }
+      out.innerHTML = '<div style="opacity:.9; font-style:italic">Fetching IN-GRES/CGWB data for: <strong>' + txt + '</strong> …</div>';
+      // since we cannot call external APIs here, simulate a short response
+      setTimeout(()=>{
+        out.innerHTML = '<div><strong>Result (simulated)</strong>\nData scope: IN-GRES (IIT Hyderabad) & CGWB.\n\nNote: This is a UI-only demo. Wire up your API key in the header to call the Generative API and fetch real IN-GRES/CGWB data.</div>'
+      },700);
+    });
+
+    clear.addEventListener('click', ()=>{ q.value=''; out.innerHTML = '<div style="color:var(--muted)">Welcome! I only answer about groundwater resource data from IN-GRES (IIT Hyderabad) and official CGWB sources. Ask by region/state/year, e.g.:<br>• “Telangana 2023 status”</div>' })
+  </script>
+</body>
+</html>
