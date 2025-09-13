@@ -646,9 +646,9 @@
         const loadingIndicator = document.getElementById('loadingIndicator');
 
        
-        const GEMINI_API_KEY = "AIzaSyA6w5uOYY8wQqdwEY6BfbU3tP6RyVZOWdY"; // YOUR ACTUAL API KEY
+        const GEMINI_API_KEY = "AIzaSyA6w5uOYY8wQqdwEY6BfbU3tP6RyVZOWdY"; 
         // ========================================================================
-        const MODEL_NAME = "gemini-2.5-flash"; // Or your preferred model
+        const MODEL_NAME = "gemini-2.5-flash"; 
 
 
         const systemInstructionText = `You are a InGresBot, who only provide very long detail answer 
@@ -801,7 +801,7 @@ Never break character. If you understand, say "cool here we go!" . spelling mist
             }
         });
 
-        // Allow Enter key (but not Shift+Enter) in textarea to submit
+        // Allow Enter key in textarea to submit
         questionInput.addEventListener('keypress', function(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
